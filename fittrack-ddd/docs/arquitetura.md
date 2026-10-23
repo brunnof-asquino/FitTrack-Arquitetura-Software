@@ -87,6 +87,59 @@ A tabela sugere uma migração conceitual; não significa que cada arquivo deva 
 - **Evolução:** detalhes técnicos podem ser substituídos com menor impacto nas regras de negócio.
 - **Proporcionalidade:** o monólito modular aproveita a organização existente sem exigir microsserviços prematuramente.
 
-## 7. Limites e próximos refinamentos
+## 7. Contratos e casos de uso
+
+Nesta proposta de arquitetura, a camada de aplicação coordena os casos de uso do FitTrack e utiliza contratos para acessar recursos externos. A infraestrutura fornece as implementações concretas desses contratos.
+
+Essa separação reduz o acoplamento entre as regras de negócio e os detalhes técnicos de persistência, armazenamento de arquivos e segurança.
+
+### Contratos propostos
+
+Os contratos a seguir representam interfaces conceituais da arquitetura-alvo. Eles não indicam que essas interfaces já estejam implementadas no código atual.
+
+| Contrato | Responsabilidade |
+|---|---|
+| `UserRepository` | Definir operações para consultar e persistir usuários. |
+| `WorkoutRepository` | Definir operações para criar, consultar, atualizar e remover treinos. |
+| `InteractionRepository` | Definir operações de persistência para curtidas e comentários. |
+| `MediaStorage` | Definir operações para armazenar, consultar e remover arquivos de mídia. |
+| `PasswordHasher` | Definir operações para gerar e verificar hashes de senhas. |
+| `TokenService` | Definir operações para emitir e validar tokens de autenticação. |
+
+Os contratos devem ser definidos de acordo com as necessidades dos casos de uso. A infraestrutura poderá implementá-los utilizando as tecnologias adequadas, como Sequelize e MySQL para persistência e adaptadores específicos para mídia e autenticação.
+
+### Casos de uso propostos
+
+| Caso de uso | Responsabilidade |
+|---|---|
+| `RegisterUser` | Coordenar o cadastro de um usuário e o tratamento seguro de sua senha. |
+| `PublishWorkout` | Coordenar a publicação de um treino e o armazenamento dos dados e arquivos necessários. |
+| `UpdateWorkout` | Coordenar a atualização de um treino, respeitando as regras de autorização e negócio. |
+| `DeleteWorkout` | Coordenar a remoção de um treino e o tratamento dos recursos associados. |
+| `LikeWorkout` | Registrar uma curtida conforme as regras de negócio definidas. |
+| `UnlikeWorkout` | Remover uma curtida existente. |
+| `AddComment` | Validar e registrar um comentário em um treino. |
+| `SearchWorkouts` | Coordenar a busca de treinos conforme os critérios disponíveis. |
+
+Esses casos de uso são uma proposta de organização da aplicação. Suas regras detalhadas devem ser confirmadas a partir do comportamento real do sistema e dos requisitos do domínio.
+
+### Fluxo de dependências
+
+1. Um controller da interface HTTP recebe a requisição e encaminha os dados para o caso de uso correspondente.
+2. O caso de uso coordena a operação e aplica as regras pertinentes ao domínio.
+3. Quando precisa acessar dados ou serviços externos, a aplicação utiliza os contratos definidos para essa finalidade.
+4. A infraestrutura implementa os contratos e realiza as operações técnicas, como persistência no banco de dados, armazenamento de mídia e segurança.
+5. O resultado retorna pela camada de aplicação até a interface HTTP, que produz a resposta apropriada.
+
+### Benefícios arquiteturais
+
+- **Separação de responsabilidades:** cada camada possui uma finalidade clara.
+- **Baixo acoplamento:** os casos de uso não precisam conhecer diretamente os detalhes dos adaptadores concretos.
+- **Testabilidade:** os contratos permitem substituir dependências externas por implementações de teste.
+- **Manutenibilidade:** mudanças na persistência ou no armazenamento podem ser isoladas da lógica de aplicação, desde que os contratos sejam preservados.
+
+A adoção efetiva dessa estrutura exigiria uma refatoração gradual do código existente. Esta documentação descreve a arquitetura proposta e não afirma que essa refatoração já tenha sido realizada.
+
+## 8. Limites e próximos refinamentos
 
 Esta proposta é documental. Antes de uma implementação real, devem ser confirmadas as regras de negócio, os limites de cada contexto, a necessidade de agregados e objetos de valor, e os contratos de persistência. A arquitetura DDD não é alcançada apenas pela estrutura de pastas; depende de o código expressar o modelo de domínio e suas regras.
