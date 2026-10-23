@@ -64,3 +64,64 @@ Falhas temporárias devem contar com política de tentativas, observabilidade e 
 ## 7. Limites da proposta
 
 Esta documentação apresenta uma proposta arquitetural, não uma implementação funcional. A adoção de Kafka não exige transformar imediatamente o FitTrack em microsserviços: o produtor pode permanecer dentro do monólito modular, enquanto os consumidores podem ser implantados separadamente quando houver justificativa operacional.
+
+## 8. Representação arquitetural — Modelo C4
+
+O diagrama a seguir apresenta uma visão arquitetural da proposta de comunicação orientada a eventos do FitTrack. Ele destaca o sistema principal, o banco de dados, a camada de publicação de eventos, o Apache Kafka e os consumidores propostos.
+
+### 8.1 Diagrama de contêineres
+
+```mermaid
+flowchart TB
+    U["Pessoa usuária"]
+
+    subgraph FITTRACK["Sistema FitTrack"]
+        FE["Frontend Web"]
+        API["Backend — Monólito Modular DDD"]
+        UC["Caso de uso: Publicar Treino"]
+        DB[("Banco de dados MySQL")]
+        OUTBOX[("Tabela Outbox")]
+        PUB["Publicador de eventos"]
+        
+        FE -->|"Requisição HTTP"| API
+        API --> UC
+        UC -->|"Persiste treino e evento"| DB
+        UC -->|"Mesma transação"| OUTBOX
+        OUTBOX -->|"Eventos pendentes"| PUB
+    end
+
+    K["Apache Kafka<br/>Tópico: fittrack.workout-published"]
+
+    subgraph CONSUMERS["Consumidores propostos — evolução futura"]
+        NOTIF["Consumidor de notificações"]
+        STATS["Consumidor de estatísticas"]
+    end
+
+    U --> FE
+    PUB -->|"Publica WorkoutPublished"| K
+    K --> NOTIF
+    K --> STATS
+```
+
+### 8.2 Descrição dos componentes
+
+- **Frontend Web:** interface utilizada pelas pessoas usuárias para interagir com o FitTrack.
+- **Backend — Monólito Modular DDD:** concentra os módulos da aplicação e coordena os casos de uso.
+- **Caso de uso Publicar Treino:** executa o fluxo de publicação e solicita a persistência dos dados.
+- **Banco de dados MySQL:** armazena os dados do treino.
+- **Tabela Outbox:** registra o evento na mesma transação do banco de dados, evitando que a gravação do treino e o registro do evento sejam operações independentes.
+- **Publicador de eventos:** identifica registros pendentes na Outbox e os publica no Kafka.
+- **Apache Kafka:** recebe e retém eventos no tópico definido, permitindo que consumidores os processem independentemente.
+- **Consumidores de notificações e estatísticas:** representam possibilidades de evolução futura, não funcionalidades confirmadas do sistema atual.
+
+### 8.3 Fluxo de comunicação
+
+1. A pessoa usuária solicita a publicação de um treino pelo frontend.
+2. O backend executa o caso de uso de publicação.
+3. O treino e o registro correspondente na Outbox são gravados na mesma transação do banco de dados.
+4. O publicador lê os registros pendentes e envia os eventos ao Kafka.
+5. Os consumidores interessados leem os eventos e executam seus próprios processamentos.
+
+O uso da Outbox reduz o risco de perda de eventos entre a persistência do treino e a publicação no Kafka. O publicador e os consumidores ainda precisam tratar falhas, reentregas e duplicidade de processamento.
+
+**Observação:** o diagrama representa uma arquitetura proposta. Ele não afirma que Kafka, Outbox ou os consumidores já estejam implementados no FitTrack.
