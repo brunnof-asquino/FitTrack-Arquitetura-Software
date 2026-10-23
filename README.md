@@ -46,8 +46,6 @@ A análise também descreve a metodologia utilizada para permitir que a inspeç�
 
 **Documentação:** [`fittrack-solid/`](./fittrack-solid/)
 
-> **Observação:** os caminhos das Questões 2 e 3 devem corresponder às pastas efetivamente criadas no repositório. Os links poderão ser ajustados conforme a organização final dos documentos.
-
 ## Organização do repositório
 
 A documentação é organizada por questão para facilitar a navegação e distinguir as diferentes propostas arquiteturais.
@@ -75,12 +73,12 @@ O objetivo é demonstrar a compreensão dos conceitos estudados, justificar as d
 
 ## Informações Adicionais
 
-**Aluno:** Brunno Fischer Asquino
-**Curso:** Engenharia de Software, Católica de SC
-**Disciplina:** Projeto e Arquitetura de Software
-**Fase:** 5º Fase
-**Professor:** Luiz Carlos Camargo
+- **Aluno:** Brunno Fischer Asquino
+- **Curso:** Engenharia de Software, Católica de SC
+- **Disciplina:** Projeto e Arquitetura de Software
+- **Fase:** 5º Fase
+- **Professor:** Luiz Carlos Camargo
 
 ## Repositório
 
-[FitTrack-DDD no GitHub](https://github.com/brunnof-asquino/FitTrack-DDD)
+[FitTrack-DDD no GitHub](https://github.com/brunnof-asquino/FitTrack-Arquitetura-Software)
