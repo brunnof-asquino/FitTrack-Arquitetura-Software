@@ -36,10 +36,10 @@ Para obter uma cópia local, siga estes passos:
 
 1. Instale o [Git](https://git-scm.com/downloads), caso ainda não esteja instalado.
 2. Abra um terminal na pasta em que deseja guardar o projeto.
-3. Execute o comando abaixo, substituindo `SEU-USUARIO` pelo nome de usuário ou organização que hospeda o repositório:
+3. Execute o comando abaixo, substituindo `brunnof-asquino` pelo nome de usuário ou organização que hospeda o repositório:
 
 ```bash
-git clone https://github.com/SEU-USUARIO/fittrack-ddd.git
+git clone https://github.com/brunnof-asquino/fittrack-ddd.git
 cd fittrack-ddd
 ```
 
