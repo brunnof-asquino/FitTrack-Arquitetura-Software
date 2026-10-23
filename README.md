@@ -81,4 +81,4 @@ O objetivo é demonstrar a compreensão dos conceitos estudados, justificar as d
 
 ## Repositório
 
-[FitTrack-DDD no GitHub](https://github.com/brunnof-asquino/FitTrack-Arquitetura-Software)
+[FitTrack-Arquitetura-Software no GitHub](https://github.com/brunnof-asquino/FitTrack-Arquitetura-Software)
