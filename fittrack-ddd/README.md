@@ -30,22 +30,20 @@ A aplicação existente possui um frontend em Vue 3, com Vue Router, Pinia, Axio
 4. **Infraestrutura implementa detalhes técnicos:** persistência, armazenamento de mídia e mecanismos de segurança ficam fora do núcleo de domínio.
 5. **Proposta, não migração executada:** os diretórios em `src/` mostram uma organização-alvo; os arquivos do backend original não foram alterados nem migrados.
 
-## Como publicar no GitHub
+## Como clonar o repositório
 
-1. Crie um repositório vazio chamado `fittrack-ddd` no GitHub.
-2. Extraia os arquivos deste pacote e abra um terminal dentro da pasta `fittrack-ddd`.
-3. Execute:
+Para obter uma cópia local, siga estes passos:
+
+1. Instale o [Git](https://git-scm.com/downloads), caso ainda não esteja instalado.
+2. Abra um terminal na pasta em que deseja guardar o projeto.
+3. Execute o comando abaixo, substituindo `SEU-USUARIO` pelo nome de usuário ou organização que hospeda o repositório:
 
 ```bash
-git init
-git add .
-git commit -m "docs: documenta proposta de arquitetura DDD do FitTrack"
-git branch -M main
-git remote add origin https://github.com/SEU-USUARIO/fittrack-ddd.git
-git push -u origin main
+git clone https://github.com/SEU-USUARIO/fittrack-ddd.git
+cd fittrack-ddd
 ```
 
-Substitua `SEU-USUARIO` pelo seu usuário real do GitHub. Não adicione arquivos `.env`, credenciais, tokens ou outros segredos ao repositório.
+O comando `git clone` baixa os arquivos e cria a pasta local `fittrack-ddd`. 
 
 ## Status
 
