@@ -1,35 +1,45 @@
-# Diagrama da arquitetura DDD proposta
+# Diagrama da Arquitetura DDD do FitTrack
 
-O diagrama representa uma visão lógica em camadas para um monólito modular. Não representa infraestrutura de produção nem serviços já implementados.
+O diagrama apresenta a arquitetura-alvo proposta para o FitTrack, organizada como um monólito modular baseado em Domain-Driven Design (DDD).
+
+A camada de aplicação coordena os casos de uso e depende de contratos (portas) para acessar recursos externos. A infraestrutura implementa esses contratos, mantendo o domínio independente de tecnologias como Express, Sequelize e do sistema de arquivos.
 
 ```mermaid
 flowchart TB
-    FE[Frontend Vue 3]
-    HTTP[Interfaces HTTP\nRotas e controladores Express]
-    APP[Application\nCasos de uso]
-    DOM[Domain\nUsuários · Treinos · Interações]
-    REPO[Adaptadores de persistência\nSequelize / MySQL]
-    MEDIA[Adaptador de mídia\nSistema de arquivos ou armazenamento futuro]
-    SEC[Adaptadores de segurança\nJWT e bcrypt]
-    DB[(MySQL)]
-    FS[(Arquivos de mídia)]
+    FE["Frontend Vue 3"]
+    HTTP["Interfaces HTTP<br/>Express e Controllers"]
+    APP["Application<br/>Casos de uso"]
+    DOM["Domain<br/>Entidades e regras de negócio"]
+    PORTS["Contratos / Portas<br/>Repositórios e serviços externos"]
+    INFRA["Infrastructure<br/>Adaptadores concretos"]
+    DB[("MySQL")]
+    MEDIA[("Armazenamento de mídia")]
+    SECURITY["Adaptadores de segurança<br/>JWT e bcrypt"]
 
-    FE -->|HTTP / JSON| HTTP
+    FE --> HTTP
     HTTP --> APP
     APP --> DOM
-    APP --> REPO
-    APP --> MEDIA
-    HTTP --> SEC
-    REPO --> DB
-    MEDIA --> FS
+    APP --> PORTS
+    INFRA -. "implementa contratos" .-> PORTS
+    INFRA --> DB
+    INFRA --> MEDIA
+    INFRA --> SECURITY
 ```
 
-## Leitura do diagrama
+## Interpretação do diagrama
 
-- O frontend consome a API HTTP.
-- A interface HTTP valida/adapta requisições e encaminha operações aos casos de uso.
-- Os casos de uso coordenam as regras do domínio e dependências técnicas por contratos.
-- Os adaptadores de persistência e mídia implementam o acesso ao MySQL e aos arquivos.
-- JWT e bcrypt são mecanismos técnicos; as políticas de autorização e os casos de uso devem ser organizados de forma que as regras de negócio não fiquem espalhadas por detalhes do framework.
+- **Frontend:** interface web desenvolvida com Vue 3, responsável pela interação com o usuário.
+- **Interfaces HTTP:** recebem as requisições e encaminham as operações para os casos de uso.
+- **Application:** coordena os casos de uso, como publicar treinos, adicionar comentários e registrar curtidas.
+- **Domain:** concentra o modelo de domínio e as regras de negócio, sem depender diretamente de frameworks ou tecnologias de persistência.
+- **Contratos / Portas:** definem as operações necessárias para acessar repositórios e serviços externos.
+- **Infrastructure:** fornece implementações concretas para persistência, armazenamento de mídia e segurança.
+- **MySQL:** representa a persistência dos dados.
+- **Armazenamento de mídia:** representa o mecanismo utilizado para guardar arquivos de treinos e imagens.
+- **Adaptadores de segurança:** encapsulam os mecanismos técnicos de autenticação e hash de senhas.
 
-A ligação do módulo de segurança é ilustrativa: a autenticação HTTP pode verificar a identidade antes de invocar um caso de uso, enquanto a autorização de negócio deve ser garantida no fluxo de aplicação/domínio apropriado.
+## Regra de dependência
+
+A aplicação depende de contratos definidos para suas necessidades, e a infraestrutura implementa esses contratos. Assim, é possível substituir detalhes técnicos sem obrigar o domínio a depender diretamente deles.
+
+Este diagrama representa uma proposta de arquitetura-alvo. Ele não afirma que a separação completa em camadas e contratos já esteja implementada no código atual do FitTrack.
